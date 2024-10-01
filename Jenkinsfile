@@ -80,6 +80,18 @@ pipeline{
                 }
             }    
         }
+        stage('Quality Gate') {
+                   steps {
+                       script {
+                           timeout(time: 1, unit: 'HOURS') {
+                               def qualityGate = waitForQualityGate() // Espera el resultado de la Quality Gate
+                               if (qualityGate.status != 'OK') {
+                                   error "La Quality Gate ha fallado: ${qualityGate.status}"
+                               }
+                           }
+                       }
+                   }
+        }
         stage("Report"){
             steps{
                 echo "Realizando reporte de resultados"
