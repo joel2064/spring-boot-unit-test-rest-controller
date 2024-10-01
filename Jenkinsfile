@@ -65,7 +65,8 @@ pipeline{
                     steps{
                         script{
                             withSonarQubeEnv('sonarqube') {
-                                sh "${scanner_home}/bin/sonar-scanner \
+                                sh """
+                                ${scanner_home}/bin/sonar-scanner \
                                 -Dsonar.projectKey=projectsonar1 \
                                 -Dsonar.projectName=projectsonar1 \
                                 -Dsonar.languaje=java \
@@ -73,7 +74,8 @@ pipeline{
                                 -Dsonar.java.binaries=target/classes/ \
                                 -Dsonar.exclusions=src/test/ \
                                 -Dsonar.host.url=http://sonarqube:9000 \
-                                -Dsonar.login=${CREDENTIALS_SONARQUBE}"
+                                -Dsonar.login=${CREDENTIALS_SONARQUBE}
+                                """
                             }
                         }
                     }
