@@ -56,6 +56,8 @@ pipeline{
                 stage("Static Test"){
                     environment{
                         def scanner_home = tool 'sonar-scanner'
+                        CREDENTIALS_SONARQUBE= credentials('credentials-sonarqube')
+
                         //def sonar_key = readMavenPom().getName()
                         //groupId = readMavenPom().getGroupId()
                         //artifactId = readMavenPom().getArtifactId()
@@ -71,8 +73,7 @@ pipeline{
                                 -Dsonar.java.binaries=target/classes/ \
                                 -Dsonar.exclusions=src/test/ \
                                 -Dsonar.host.url=http://sonarqube:9000 \
-                                -Dsonar.login=admin \
-                                -Dsonar.password=sonarpass"
+                                -Dsonar.login=${CREDENTIALS_SONARQUBE}"
                             }
                         }
                     }
