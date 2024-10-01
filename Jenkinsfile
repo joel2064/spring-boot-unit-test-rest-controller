@@ -55,8 +55,8 @@ pipeline{
                 }
                 stage("Static Test"){
                     environment{
-                        scanner_home = tool 'sonar-scanner'
-                        CREDENTIALS_SONARQUBE= credentials('credentials-sonarqube')
+                        def scanner_home = tool 'sonar-scanner'
+                        def CREDENTIALS_SONARQUBE= credentials('sonarqube-token')
 
                         //def sonar_key = readMavenPom().getName()
                         //groupId = readMavenPom().getGroupId()
@@ -65,7 +65,7 @@ pipeline{
                     steps{
                         script{
                             withSonarQubeEnv('sonarqube') {
-                                sh '${scanner_home}/bin/sonar-scanner \
+                                sh "${scanner_home}/bin/sonar-scanner \
                                 -Dsonar.projectKey=projectsonar1 \
                                 -Dsonar.projectName=projectsonar1 \
                                 -Dsonar.languaje=java \
@@ -73,7 +73,7 @@ pipeline{
                                 -Dsonar.java.binaries=target/classes/ \
                                 -Dsonar.exclusions=src/test/ \
                                 -Dsonar.host.url=http://sonarqube:9000 \
-                                -Dsonar.login=${CREDENTIALS_SONARQUBE}'
+                                -Dsonar.token=${CREDENTIALS_SONARQUBE}"
                             }
                         }
                     }
