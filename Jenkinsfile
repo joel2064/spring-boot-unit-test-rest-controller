@@ -56,7 +56,7 @@ pipeline{
                 stage("Static Test"){
                     environment{
                         def scanner_home = tool 'sonar-scanner'
-                        CREDENTIALS_SONARQUBE= credentials('credentials-sonarqube')
+                        def CREDENTIALS_SONARQUBE= credentials('credentials-sonarqube')
 
                         //def sonar_key = readMavenPom().getName()
                         //groupId = readMavenPom().getGroupId()
