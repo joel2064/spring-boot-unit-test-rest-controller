@@ -70,6 +70,7 @@ pipeline{
                                 -Dsonar.projectName=projectsonar1 \
                                 -Dsonar.languaje=java \
                                 -Dsonar.sources=src/ \
+                                -Dsonar.core.serverBaseURL=http://localhost:9000 \
                                 -Dsonar.java.binaries=target/classes/ \
                                 -Dsonar.exclusions=src/test/ \
                                 -Dsonar.host.url=http://sonarqube:9000 \
@@ -78,20 +79,21 @@ pipeline{
                         }
                     }
                 }
+                stage('Quality Gate') {
+                    steps {
+                        script {
+                            timeout(time: 1, unit: 'HOURS') {
+                                def qualityGate = waitForQualityGate() // Espera el resultado de la Quality Gate
+                                if (qualityGate.status != 'OK') {
+                                    error "La Quality Gate ha fallado: ${qualityGate.status}"
+                                }
+                            }
+                        }
+                    }
+                }
             }    
         }
-        stage('Quality Gate') {
-                   steps {
-                       script {
-                           timeout(time: 1, unit: 'HOURS') {
-                               def qualityGate = waitForQualityGate() // Espera el resultado de la Quality Gate
-                               if (qualityGate.status != 'OK') {
-                                   error "La Quality Gate ha fallado: ${qualityGate.status}"
-                               }
-                           }
-                       }
-                   }
-        }
+
         stage("Report"){
             steps{
                 echo "Realizando reporte de resultados"
