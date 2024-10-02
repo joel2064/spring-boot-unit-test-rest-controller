@@ -11,6 +11,6 @@ public interface TutorialRepository extends JpaRepository<Tutorial, Long> {
 
   List<Tutorial> findByTitleContaining(String title);
   
-  int valor = 1
+  int valor = 1;
 
 }
