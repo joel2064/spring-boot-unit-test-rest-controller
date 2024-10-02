@@ -53,40 +53,43 @@ pipeline{
                         )
                     }
                 }
-                stage("Static Test"){
-                    environment{
-                        def scanner_home = tool 'sonar-scanner'
-                        def CREDENTIALS_SONARQUBE= credentials('sonarqube-token')
-
-                        //def sonar_key = readMavenPom().getName()
-                        //groupId = readMavenPom().getGroupId()
-                        //artifactId = readMavenPom().getArtifactId()
-                    }
-                    steps{
-                        script{
-                            withSonarQubeEnv('sonarqube') {
-                                sh "${scanner_home}/bin/sonar-scanner \
-                                -Dsonar.projectKey=projectsonar1 \
-                                -Dsonar.projectName=projectsonar1 \
-                                -Dsonar.languaje=java \
-                                -Dsonar.sources=src/ \
-                                -Dsonar.core.serverBaseURL=http://localhost:9000 \
-                                -Dsonar.java.binaries=target/classes/ \
-                                -Dsonar.exclusions=src/test/ \
-                                -Dsonar.host.url=http://sonarqube:9000 \
-                                -Dsonar.token=${CREDENTIALS_SONARQUBE}"
+                stage ('Prueba estatica'){
+                    stages{
+                        stage("Ejecucion de Sonarqube"){
+                            environment{
+                                def scanner_home = tool 'sonar-scanner'
+                                def CREDENTIALS_SONARQUBE= credentials('sonarqube-token')
+                                //def sonar_key = readMavenPom().getName()
+                                //groupId = readMavenPom().getGroupId()
+                                //artifactId = readMavenPom().getArtifactId()
+                            }
+                            steps{
+                                script{
+                                    withSonarQubeEnv('sonarqube') {
+                                    sh "${scanner_home}/bin/sonar-scanner \
+                                    -Dsonar.projectKey=projectsonar1 \
+                                    -Dsonar.projectName=projectsonar1 \
+                                    -Dsonar.languaje=java \
+                                    -Dsonar.sources=src/ \
+                                    -Dsonar.core.serverBaseURL=http://localhost:9000 \
+                                    -Dsonar.java.binaries=target/classes/ \
+                                    -Dsonar.exclusions=src/test/ \
+                                    -Dsonar.host.url=http://sonarqube:9000 \
+                                    -Dsonar.token=${CREDENTIALS_SONARQUBE}"
+                                    }
+                                }
                             }
                         }
-                    }
-                }
-                stage('Quality Gate') {
-                    steps {
-                        script {
-                            sleep(10)
-                            timeout(time: 5, unit: 'MINUTES') {
-                                def qualityGate = waitForQualityGate() // Espera el resultado de la Quality Gate
-                                if (qualityGate.status != 'OK') {
-                                    error "La Quality Gate ha fallado: ${qualityGate.status}"
+                        stage('Ejecucion de Quality Gate') {
+                            steps {
+                                script {
+                                    sleep(10)
+                                    timeout(time: 5, unit: 'MINUTES') {
+                                        def qualityGate = waitForQualityGate() // Espera el resultado de la Quality Gate
+                                        if (qualityGate.status != 'OK') {
+                                            error "La Quality Gate ha fallado: ${qualityGate.status}"
+                                        }
+                                    }
                                 }
                             }
                         }
